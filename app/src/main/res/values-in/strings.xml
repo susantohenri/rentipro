@@ -49,6 +49,7 @@
     <string name="onboarding_preset_price_label">Harga</string>
     <string name="onboarding_preset_arrow">→</string>
     <string name="onboarding_add_preset">Tambah preset</string>
+    <string name="onboarding_add_unit">Tambah unit</string>
     <string name="onboarding_finish">Selesai</string>
     <string name="onboarding_error_unit_name_empty">Semua nama unit harus diisi.</string>
     <string name="onboarding_error_invalid_duration">Durasi harus angka positif.</string>

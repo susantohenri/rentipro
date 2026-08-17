@@ -30,6 +30,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -169,18 +170,11 @@ fun SettingsScreen(
                     .padding(horizontal = 16.dp, vertical = 8.dp),
             ) {
                 presets.forEach { preset ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(text = stringResource(R.string.rental_preset_format, preset.durationMinutes, preset.price))
-                        IconButton(onClick = { presetToDelete = preset }) {
-                            Icon(Icons.Default.Delete, contentDescription = null)
-                        }
-                    }
+                    SettingsPresetRow(
+                        preset = preset,
+                        onUpdate = { viewModel.updatePreset(it) },
+                        onDelete = { presetToDelete = preset }
+                    )
                 }
 
                 Row(
@@ -260,7 +254,7 @@ fun SettingsScreen(
         AlertDialog(
             onDismissRequest = { presetToDelete = null },
             title = { Text(stringResource(R.string.settings_delete_preset_title)) },
-            text = { Text(stringResource(R.string.settings_delete_preset_message)) },
+            text = { Text(stringResource(R.string.settings_delete_preset_message, presetToDelete!!.durationMinutes, presetToDelete!!.price)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -287,4 +281,70 @@ private fun SettingsSectionTitle(text: String) {
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
     )
+}
+
+@Composable
+private fun SettingsPresetRow(
+    preset: RentalPresetEntity,
+    onUpdate: (RentalPresetEntity) -> Unit,
+    onDelete: () -> Unit,
+) {
+    var durationText by remember { mutableStateOf(preset.durationMinutes.toString()) }
+    var priceText by remember { mutableStateOf(preset.price.toString()) }
+
+    LaunchedEffect(preset.durationMinutes) {
+        if (durationText.toIntOrNull() != preset.durationMinutes) {
+            durationText = preset.durationMinutes.toString()
+        }
+    }
+
+    LaunchedEffect(preset.price) {
+        if (priceText.toIntOrNull() != preset.price) {
+            priceText = preset.price.toString()
+        }
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TextField(
+            value = durationText,
+            onValueChange = {
+                durationText = it
+                val newDuration = it.toIntOrNull()
+                if (newDuration != null && newDuration > 0) {
+                    onUpdate(preset.copy(durationMinutes = newDuration))
+                }
+            },
+            modifier = Modifier.weight(1f),
+            label = { Text(stringResource(R.string.settings_preset_duration_hint)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            singleLine = true,
+        )
+        Text(
+            text = stringResource(R.string.onboarding_preset_arrow),
+            style = MaterialTheme.typography.titleMedium,
+        )
+        TextField(
+            value = priceText,
+            onValueChange = {
+                priceText = it
+                val newPrice = it.toIntOrNull()
+                if (newPrice != null && newPrice >= 0) {
+                    onUpdate(preset.copy(price = newPrice))
+                }
+            },
+            modifier = Modifier.weight(1f),
+            label = { Text(stringResource(R.string.settings_preset_price_hint)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            singleLine = true,
+        )
+        IconButton(onClick = onDelete) {
+            Icon(Icons.Default.Delete, contentDescription = null)
+        }
+    }
 }

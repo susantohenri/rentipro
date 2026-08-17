@@ -52,6 +52,18 @@ class OnboardingViewModel(
         }
     }
 
+    fun addUnit() {
+        _unitNames.update { names ->
+            names + ""
+        }
+    }
+
+    fun removeUnit(index: Int) {
+        _unitNames.update { names ->
+            names.toMutableList().also { it.removeAt(index) }
+        }
+    }
+
     fun updatePresetDuration(id: Long, duration: String) {
         _presets.update { list ->
             list.map { preset ->

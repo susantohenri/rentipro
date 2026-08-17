@@ -58,6 +58,12 @@ class SettingsViewModel(
         }
     }
 
+    fun updatePreset(preset: RentalPresetEntity) {
+        viewModelScope.launch {
+            presetRepository.updatePreset(preset)
+        }
+    }
+
     fun deletePreset(preset: RentalPresetEntity) {
         viewModelScope.launch {
             presetRepository.deletePreset(preset)

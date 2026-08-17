@@ -134,6 +134,14 @@ private fun UnitsStep(
                     )
                 }
             },
+            actions = {
+                IconButton(onClick = viewModel::addUnit) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.onboarding_add_unit),
+                    )
+                }
+            },
         )
         Column(
             modifier = Modifier
@@ -148,14 +156,36 @@ private fun UnitsStep(
             )
             Spacer(modifier = Modifier.height(16.dp))
             unitNames.forEachIndexed { index, name ->
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { viewModel.updateUnitName(index, it) },
-                    label = { Text(stringResource(R.string.onboarding_unit_name_label, index + 1)) },
-                    singleLine = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp),
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { viewModel.updateUnitName(index, it) },
+                        label = { Text(stringResource(R.string.onboarding_unit_name_label, index + 1)) },
+                        singleLine = true,
+                        modifier = Modifier.weight(1f),
+                    )
+                    if (unitNames.size > 1) {
+                        IconButton(onClick = { viewModel.removeUnit(index) }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.action_delete),
+                            )
+                        }
+                    }
+                }
+            }
+            TextButton(
+                onClick = viewModel::addUnit,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(Icons.Default.Add, contentDescription = null)
+                Text(
+                    text = stringResource(R.string.onboarding_add_unit),
+                    modifier = Modifier.padding(start = 8.dp),
                 )
             }
             OnboardingErrorText(error = error)
