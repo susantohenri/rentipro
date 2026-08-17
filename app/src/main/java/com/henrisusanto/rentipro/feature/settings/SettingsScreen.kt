@@ -47,6 +47,7 @@ import com.henrisusanto.rentipro.R
 import com.henrisusanto.rentipro.core.database.entity.RentalPresetEntity
 import com.henrisusanto.rentipro.core.model.AppLanguage
 import com.henrisusanto.rentipro.core.model.ThemeMode
+import com.henrisusanto.rentipro.core.util.toFormattedString
 import com.henrisusanto.rentipro.ui.components.SettingsChoiceRow
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -254,7 +255,7 @@ fun SettingsScreen(
         AlertDialog(
             onDismissRequest = { presetToDelete = null },
             title = { Text(stringResource(R.string.settings_delete_preset_title)) },
-            text = { Text(stringResource(R.string.settings_delete_preset_message, presetToDelete!!.durationMinutes, presetToDelete!!.price)) },
+            text = { Text(stringResource(R.string.settings_delete_preset_message, presetToDelete!!.durationMinutes, presetToDelete!!.price.toFormattedString())) },
             confirmButton = {
                 TextButton(
                     onClick = {

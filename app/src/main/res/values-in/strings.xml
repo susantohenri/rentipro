@@ -75,7 +75,7 @@
     <!-- Start rental -->
     <string name="start_rental_select_unit">Pilih unit</string>
     <string name="start_rental_select_preset">Pilih durasi untuk %1$s</string>
-    <string name="rental_preset_format">%1$d menit → %2$d</string>
+    <string name="rental_preset_format">%1$d menit → %2$s</string>
     <string name="start_rental_no_units">Tidak ada unit tersedia</string>
     <string name="start_rental_no_presets">Tambahkan durasi dan harga sewa untuk mulai menyewa</string>
 
@@ -104,7 +104,7 @@
     <string name="history_rental_price">Harga</string>
     <string name="history_duration_format">%1$d menit</string>
     <string name="history_extensions_title">Perpanjangan</string>
-    <string name="history_extension_format">+%1$d menit → +%2$d</string>
+    <string name="history_extension_format">+%1$d menit → +%2$s</string>
     <string name="history_status_active">Aktif</string>
     <string name="history_status_completed">Selesai</string>
     <string name="history_status_deleted">Dihapus</string>
@@ -121,7 +121,7 @@
     <string name="settings_presets_title">Preset Sewa</string>
     <string name="settings_add_preset">Tambah preset</string>
     <string name="settings_delete_preset_title">Hapus preset?</string>
-    <string name="settings_delete_preset_message">%1$d menit → %2$d akan dihapus.</string>
+    <string name="settings_delete_preset_message">%1$d menit → %2$s akan dihapus.</string>
     <string name="settings_preset_duration_hint">Menit</string>
     <string name="settings_preset_price_hint">Harga</string>
 

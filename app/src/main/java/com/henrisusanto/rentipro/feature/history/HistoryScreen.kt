@@ -24,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.henrisusanto.rentipro.R
 import com.henrisusanto.rentipro.core.database.model.HistoryRentalWithDetails
 import com.henrisusanto.rentipro.core.model.RentalStatus
+import com.henrisusanto.rentipro.core.util.toFormattedString
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -72,7 +73,7 @@ fun HistoryScreen(viewModel: HistoryViewModel) {
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            text = uiState.totalRentals.toString(),
+                            text = uiState.totalRentals.toFormattedString(),
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -84,7 +85,7 @@ fun HistoryScreen(viewModel: HistoryViewModel) {
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            text = uiState.totalRevenue.toString(),
+                            text = uiState.totalRevenue.toFormattedString(),
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -167,7 +168,7 @@ private fun HistoryRentalCard(item: HistoryRentalWithDetails) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        text = item.rental.price.toString(),
+                        text = item.rental.price.toFormattedString(),
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
@@ -196,7 +197,7 @@ private fun HistoryRentalCard(item: HistoryRentalWithDetails) {
                                 text = stringResource(
                                     R.string.history_extension_format,
                                     ext.addedDurationMinutes,
-                                    ext.addedPrice,
+                                    ext.addedPrice.toFormattedString(),
                                 ),
                                 style = MaterialTheme.typography.labelSmall,
                                 modifier = Modifier.weight(1f),

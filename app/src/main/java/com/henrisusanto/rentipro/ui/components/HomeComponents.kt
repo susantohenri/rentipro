@@ -18,6 +18,7 @@ import com.henrisusanto.rentipro.R
 import com.henrisusanto.rentipro.feature.home.HomeRentalCategory
 import com.henrisusanto.rentipro.feature.home.HomeRentalItem
 import com.henrisusanto.rentipro.ui.components.RentalTimerText
+import com.henrisusanto.rentipro.core.util.toFormattedString
 
 @Composable
 fun HomeRentalCard(
@@ -56,7 +57,7 @@ fun HomeRentalCard(
                     )
                 }
                 Text(
-                    text = item.price.toString(),
+                    text = item.price.toFormattedString(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -89,12 +90,12 @@ fun HomeSummaryCard(
         ) {
             SummaryMetric(
                 label = stringResource(R.string.home_summary_rentals_today),
-                value = todayRentalCount.toString(),
+                value = todayRentalCount.toFormattedString(),
                 modifier = Modifier.weight(1f),
             )
             SummaryMetric(
                 label = stringResource(R.string.home_summary_revenue_today),
-                value = todayRevenue.toString(),
+                value = todayRevenue.toFormattedString(),
                 modifier = Modifier.weight(1f),
             )
         }

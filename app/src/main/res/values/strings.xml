@@ -75,7 +75,7 @@
     <!-- Start rental -->
     <string name="start_rental_select_unit">Select a unit</string>
     <string name="start_rental_select_preset">Select duration for %1$s</string>
-    <string name="rental_preset_format">%1$d min → %2$d</string>
+    <string name="rental_preset_format">%1$d min → %2$s</string>
     <string name="start_rental_no_units">No available units</string>
     <string name="start_rental_no_presets">Add a rental duration and price to start renting</string>
 
@@ -104,7 +104,7 @@
     <string name="history_rental_price">Price</string>
     <string name="history_duration_format">%1$d min</string>
     <string name="history_extensions_title">Extensions</string>
-    <string name="history_extension_format">+%1$d min → +%2$d</string>
+    <string name="history_extension_format">+%1$d min → +%2$s</string>
     <string name="history_status_active">Active</string>
     <string name="history_status_completed">Completed</string>
     <string name="history_status_deleted">Deleted</string>
@@ -121,7 +121,7 @@
     <string name="settings_presets_title">Rental Presets</string>
     <string name="settings_add_preset">Add preset</string>
     <string name="settings_delete_preset_title">Delete preset?</string>
-    <string name="settings_delete_preset_message">%1$d min → %2$d will be deleted.</string>
+    <string name="settings_delete_preset_message">%1$d min → %2$s will be deleted.</string>
     <string name="settings_preset_duration_hint">Min</string>
     <string name="settings_preset_price_hint">Price</string>
 

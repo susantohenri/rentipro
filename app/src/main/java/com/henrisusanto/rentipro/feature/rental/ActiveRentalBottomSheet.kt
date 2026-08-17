@@ -31,6 +31,7 @@ import com.henrisusanto.rentipro.R
 import com.henrisusanto.rentipro.core.database.entity.RentalPresetEntity
 import com.henrisusanto.rentipro.feature.home.HomeRentalCategory
 import com.henrisusanto.rentipro.ui.components.RentalTimerText
+import com.henrisusanto.rentipro.core.util.toFormattedString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,7 +119,7 @@ private fun ActiveRentalActionsContent(
             highlightDueSoon = item.category == HomeRentalCategory.DUE_SOON,
         )
         Text(
-            text = item.price.toString(),
+            text = item.price.toFormattedString(),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -198,7 +199,7 @@ private fun ExtendPresetSelectionContent(
                             text = stringResource(
                                 R.string.rental_preset_format,
                                 preset.durationMinutes,
-                                preset.price,
+                                preset.price.toFormattedString(),
                             ),
                         )
                     },

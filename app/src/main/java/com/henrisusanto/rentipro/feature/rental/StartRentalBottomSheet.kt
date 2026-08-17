@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.henrisusanto.rentipro.R
 import com.henrisusanto.rentipro.core.database.entity.RentalPresetEntity
 import com.henrisusanto.rentipro.core.database.entity.RentalUnitEntity
+import com.henrisusanto.rentipro.core.util.toFormattedString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,7 +130,7 @@ private fun PresetSelectionContent(
                             text = stringResource(
                                 R.string.rental_preset_format,
                                 preset.durationMinutes,
-                                preset.price,
+                                preset.price.toFormattedString(),
                             ),
                         )
                     },
