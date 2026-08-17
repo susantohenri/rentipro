@@ -165,6 +165,7 @@ class ItemsViewModel(
 
         viewModelScope.launch {
             _dialogState.value = _dialogState.value.copy(isProcessing = true)
+            rentalRepository.deleteAllRentalsByUnitId(unitId)
             unitRepository.deleteUnit(unitId)
             _dialogState.value = _dialogState.value.copy(
                 showDeleteConfirmation = false,
@@ -207,5 +208,5 @@ class ItemsViewModel(
                 RentalTimerPhase.PAUSED -> 2
                 null -> 3
             }
-        }.thenBy { it.name }
+        }.thenBy { it.unitId }
 }

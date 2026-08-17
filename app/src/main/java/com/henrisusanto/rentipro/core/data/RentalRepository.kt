@@ -133,6 +133,10 @@ class RentalRepository(
         rentalUnitDao.updateStatus(rental.unitId, UnitStatus.AVAILABLE, nowMillis)
     }
 
+    suspend fun deleteAllRentalsByUnitId(unitId: Long) {
+        rentalDao.deleteAllByUnitId(unitId)
+    }
+
     suspend fun markUnitOverdue(unitId: Long, nowMillis: Long = System.currentTimeMillis()) {
         rentalUnitDao.updateStatus(unitId, UnitStatus.OVERDUE, nowMillis)
     }

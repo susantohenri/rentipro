@@ -75,6 +75,9 @@ interface RentalDao {
     @Query("UPDATE rentals SET status = :status, returnedAt = :returnedAt WHERE id = :id")
     suspend fun finalizeRental(id: Long, status: RentalStatus, returnedAt: Long)
 
+    @Query("DELETE FROM rentals WHERE unitId = :unitId")
+    suspend fun deleteAllByUnitId(unitId: Long)
+
     @Query("SELECT COUNT(*) FROM rentals WHERE status = 'ACTIVE'")
     suspend fun countActive(): Int
 }
