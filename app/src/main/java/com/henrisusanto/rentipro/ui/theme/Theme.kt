@@ -6,16 +6,17 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-private val GreenPrimary = Color(0xFF2E7D32)
-private val GreenDark = Color(0xFF1B5E20)
-private val GreenLight = Color(0xFF4CAF50)
+// Brand blue, matched to the app icon and listing banner.
+private val BluePrimary = Color(0xFF2563EB)
+private val BlueDark = Color(0xFF1E40AF)
+private val BlueLight = Color(0xFF60A5FA)
 
 private val LightColorScheme = lightColorScheme(
-    primary = GreenPrimary,
+    primary = BluePrimary,
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFC8E6C9),
-    onPrimaryContainer = GreenDark,
-    secondary = Color(0xFF558B2F),
+    primaryContainer = Color(0xFFDBEAFE),
+    onPrimaryContainer = BlueDark,
+    secondary = Color(0xFF1D4ED8),
     onSecondary = Color.White,
     error = Color(0xFFB00020),
     background = Color(0xFFFAFAFA),
@@ -25,12 +26,12 @@ private val LightColorScheme = lightColorScheme(
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = GreenLight,
-    onPrimary = Color(0xFF003300),
-    primaryContainer = GreenDark,
-    onPrimaryContainer = Color(0xFFC8E6C9),
-    secondary = Color(0xFF8BC34A),
-    onSecondary = Color(0xFF1B3300),
+    primary = BlueLight,
+    onPrimary = Color(0xFF002E6F),
+    primaryContainer = BlueDark,
+    onPrimaryContainer = Color(0xFFDBEAFE),
+    secondary = Color(0xFF93C5FD),
+    onSecondary = Color(0xFF002E6F),
     error = Color(0xFFCF6679),
     background = Color(0xFF121212),
     surface = Color(0xFF1E1E1E),
