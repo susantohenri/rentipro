@@ -28,6 +28,8 @@
     <string msgid="9055268688411532828" name="abc_shareactionprovider_share_with_application">"Bagikan dengan <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
     <string msgid="1656852541809559762" name="abc_toolbar_collapse_description">"Ciutkan"</string>
     <string name="action_back">Kembali</string>
+    <string name="action_cancel">Batal</string>
+    <string name="action_confirm">Konfirmasi</string>
     <string name="action_delete">Hapus</string>
     <string name="app_name">Rentipro</string>
     <string msgid="881409763997275156" name="call_notification_answer_action">"Jawab"</string>
@@ -60,10 +62,24 @@
     <string msgid="3260749812566568062" name="copy_toast_msg">"Link disalin ke papan klip"</string>
     <string msgid="8038256446254964252" name="default_error_message">"Input tidak valid"</string>
     <string msgid="6312721426453364202" name="default_popup_window_title">"Jendela Pop-Up"</string>
+    <string name="delete_rental_message">%1$s akan tersedia kembali.</string>
+    <string name="delete_rental_title">Hapus sewa?</string>
     <string msgid="1890207353314751437" name="dropdown_menu">"Menu dropdown"</string>
     <string msgid="4566929209979330987" name="fallback_menu_item_copy_link">"Salin link"</string>
     <string msgid="3413186855122069269" name="fallback_menu_item_open_in_browser">"Buka di browser"</string>
     <string msgid="7145444925855055364" name="fallback_menu_item_share_link">"Bagikan link"</string>
+    <string name="history_duration_format">%1$d menit</string>
+    <string name="history_empty">Belum ada riwayat sewa</string>
+    <string name="history_extension_format">+%1$d menit → +%2$d</string>
+    <string name="history_extensions_title">Perpanjangan</string>
+    <string name="history_rental_date">Mulai</string>
+    <string name="history_rental_duration">Durasi</string>
+    <string name="history_rental_price">Harga</string>
+    <string name="history_status_active">Aktif</string>
+    <string name="history_status_completed">Selesai</string>
+    <string name="history_status_deleted">Dihapus</string>
+    <string name="history_total_rentals">Total sewa</string>
+    <string name="history_total_revenue">Total pendapatan</string>
     <string name="home_all_units_rented">Semua unit sedang disewa</string>
     <string name="home_available_separator">, </string>
     <string name="home_no_active_rentals">Tidak ada sewa aktif</string>
@@ -80,7 +96,15 @@
     <string name="home_summary_revenue_today">Pendapatan hari ini</string>
     <string msgid="6827826412747255547" name="in_progress">"Dalam proses"</string>
     <string msgid="7933458017204019916" name="indeterminate">"Diperiksa sebagian"</string>
+    <string name="items_add_dialog_hint">Masukkan nama unit</string>
+    <string name="items_add_dialog_title">Tambah unit</string>
+    <string name="items_add_unit">Tambah unit</string>
+    <string name="items_cannot_delete_rented">Tidak dapat menghapus unit yang sedang disewa</string>
+    <string name="items_delete_dialog_message">%1$s akan dihapus secara permanen.</string>
+    <string name="items_delete_dialog_title">Hapus unit?</string>
     <string name="items_empty">Belum ada unit</string>
+    <string name="items_rename_dialog_hint">Masukkan nama baru</string>
+    <string name="items_rename_dialog_title">Ubah nama unit</string>
     <string name="items_status_available">Tersedia</string>
     <string name="items_status_overdue">Terlambat</string>
     <string name="items_status_rented">Disewa</string>
@@ -149,6 +173,12 @@
     <string name="nav_items">Unit</string>
     <string msgid="542007171693138492" name="navigation_menu">"Menu navigasi"</string>
     <string msgid="6610465462668679431" name="not_selected">"Tidak dipilih"</string>
+    <string name="notification_channel_description">Pengingat saat sewa segera jatuh tempo atau terlambat</string>
+    <string name="notification_channel_name">Pengingat sewa</string>
+    <string name="notification_due_soon_text">%1$s jatuh tempo dalam %2$d menit</string>
+    <string name="notification_due_soon_title">Sewa segera berakhir</string>
+    <string name="notification_overdue_text">Sewa %1$s terlambat</string>
+    <string name="notification_overdue_title">Sewa terlambat</string>
     <string name="notifications_permission_confirm">Izinkan</string>
     <string name="notifications_permission_decline">Jangan izinkan</string>
     <string name="notifications_permission_title">Izinkan aplikasi mengirim notifikasi kepada Anda?</string>
@@ -177,11 +207,12 @@
     <string name="onboarding_setup_units_title">Unit sewa Anda</string>
     <string name="onboarding_subtitle">Ketahui sewa yang jatuh tempo.</string>
     <string name="onboarding_unit_name_label">Unit %1$d</string>
-    <string name="placeholder_history">Riwayat</string>
-    <string name="placeholder_home">Beranda</string>
-    <string name="placeholder_items">Unit</string>
     <string msgid="5941395253238309765" name="range_end">"Rentang akhir"</string>
     <string msgid="7097486360902471446" name="range_start">"Rentang awal"</string>
+    <string name="rental_action_extend">Perpanjang</string>
+    <string name="rental_action_pause">Jeda</string>
+    <string name="rental_action_resume">Lanjutkan</string>
+    <string name="rental_extend_select_preset">Pilih durasi perpanjangan</string>
     <string name="rental_preset_format">%1$d menit → %2$d</string>
     <string name="s1">Simpan gambar</string>
     <string name="s2">Izinkan Iklan menyimpan gambar di Galeri foto?</string>
@@ -193,11 +224,25 @@
     <string msgid="6264217191555673260" name="search_menu_title">"Telusuri"</string>
     <string msgid="6043586758067023" name="selected">"Dipilih"</string>
     <string name="settings">Pengaturan</string>
+    <string name="settings_about">Tentang</string>
+    <string name="settings_add_preset">Tambah preset</string>
+    <string name="settings_app_version">Versi %1$s</string>
     <string name="settings_content_description">Pengaturan</string>
+    <string name="settings_delete_preset_message">%1$d menit → %2$d akan dihapus.</string>
+    <string name="settings_delete_preset_title">Hapus preset?</string>
+    <string name="settings_due_soon_minutes">Menit Jatuh Tempo</string>
+    <string name="settings_due_soon_minutes_desc">Menit sebelum sewa ditandai jatuh tempo</string>
+    <string name="settings_due_soon_minutes_label">Menit</string>
     <string name="settings_language">Bahasa</string>
     <string name="settings_language_english">English</string>
     <string name="settings_language_indonesian">Bahasa Indonesia</string>
+    <string name="settings_legal">Legal &amp; Info</string>
     <string name="settings_preferences">Preferensi</string>
+    <string name="settings_preset_duration_hint">Menit</string>
+    <string name="settings_preset_price_hint">Harga</string>
+    <string name="settings_presets_title">Preset Sewa</string>
+    <string name="settings_privacy_policy">Kebijakan Privasi</string>
+    <string name="settings_rental">Pengaturan Sewa</string>
     <string name="settings_theme">Tema</string>
     <string name="settings_theme_dark">Gelap</string>
     <string name="settings_theme_light">Terang</string>

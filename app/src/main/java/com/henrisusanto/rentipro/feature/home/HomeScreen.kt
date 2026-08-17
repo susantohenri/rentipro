@@ -15,7 +15,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.henrisusanto.rentipro.R
+import com.henrisusanto.rentipro.feature.rental.ActiveRentalBottomSheet
 import com.henrisusanto.rentipro.feature.rental.StartRentalBottomSheet
+import com.henrisusanto.rentipro.ui.components.AdBannerView
 import com.henrisusanto.rentipro.ui.components.AvailableUnitsRow
 import com.henrisusanto.rentipro.ui.components.HomeRentalCard
 import com.henrisusanto.rentipro.ui.components.HomeSectionHeader
@@ -23,13 +25,10 @@ import com.henrisusanto.rentipro.ui.components.HomeSummaryCard
 import com.henrisusanto.rentipro.ui.components.StartRentalButton
 
 @Composable
-fun HomeScreen(
-    viewModel: HomeViewModel,
-    onRentalClick: (Long) -> Unit = {},
-    onReturnedClick: (Long) -> Unit = {},
-) {
+fun HomeScreen(viewModel: HomeViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val startRentalState by viewModel.startRentalState.collectAsStateWithLifecycle()
+    val rentalSheetState by viewModel.rentalSheetState.collectAsStateWithLifecycle()
 
     if (startRentalState.isVisible) {
         StartRentalBottomSheet(
@@ -38,6 +37,22 @@ fun HomeScreen(
             onUnitSelected = viewModel::selectUnitForRental,
             onPresetSelected = viewModel::startRentalWithPreset,
             onBackToUnits = viewModel::backToUnitSelection,
+        )
+    }
+
+    if (rentalSheetState.item != null) {
+        ActiveRentalBottomSheet(
+            state = rentalSheetState,
+            onDismiss = viewModel::dismissRentalSheet,
+            onReturn = { viewModel.returnRental(rentalSheetState.item!!.rentalId) },
+            onExtendRequest = viewModel::openExtendSelection,
+            onPauseRequest = viewModel::pauseRental,
+            onResumeRequest = viewModel::resumeRental,
+            onDeleteRequest = viewModel::requestDeleteRental,
+            onDeleteConfirm = viewModel::confirmDeleteRental,
+            onDeleteCancel = viewModel::cancelDeleteRental,
+            onSelectPresetForExtend = viewModel::extendRentalWithPreset,
+            onCancelExtend = viewModel::cancelExtendSelection,
         )
     }
 
@@ -50,6 +65,13 @@ fun HomeScreen(
             HomeSummaryCard(
                 todayRentalCount = uiState.todayRentalCount,
                 todayRevenue = uiState.todayRevenue,
+            )
+        }
+
+        item {
+            AdBannerView(
+                adUnitId = uiState.bannerAdUnitId,
+                modifier = Modifier.padding(vertical = 8.dp),
             )
         }
 
@@ -69,8 +91,8 @@ fun HomeScreen(
             items(uiState.overdue, key = { it.rentalId }) { item ->
                 HomeRentalCard(
                     item = item,
-                    onClick = { onRentalClick(item.rentalId) },
-                    onReturnedClick = { onReturnedClick(item.rentalId) },
+                    onClick = { viewModel.openRentalSheet(item.rentalId) },
+                    onReturnedClick = { viewModel.returnRental(item.rentalId) },
                 )
             }
         }
@@ -80,7 +102,7 @@ fun HomeScreen(
             items(uiState.dueSoon, key = { it.rentalId }) { item ->
                 HomeRentalCard(
                     item = item,
-                    onClick = { onRentalClick(item.rentalId) },
+                    onClick = { viewModel.openRentalSheet(item.rentalId) },
                 )
             }
         }
@@ -90,7 +112,7 @@ fun HomeScreen(
             items(uiState.rented, key = { it.rentalId }) { item ->
                 HomeRentalCard(
                     item = item,
-                    onClick = { onRentalClick(item.rentalId) },
+                    onClick = { viewModel.openRentalSheet(item.rentalId) },
                 )
             }
         }

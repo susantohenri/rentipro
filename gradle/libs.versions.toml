@@ -9,6 +9,7 @@ lifecycle = "2.8.7"
 datastore = "1.1.1"
 playServicesAds = "23.6.0"
 userMessagingPlatform = "3.1.0"
+firebaseBom = "33.6.0"
 coroutines = "1.9.0"
 serialization = "1.7.3"
 okhttp = "4.12.0"
@@ -47,6 +48,9 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-remote-config = { group = "com.google.firebase", name = "firebase-config-ktx" }
 
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
 user-messaging-platform = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "userMessagingPlatform" }

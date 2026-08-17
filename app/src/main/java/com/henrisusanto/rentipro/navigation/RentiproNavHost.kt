@@ -31,6 +31,7 @@ import com.henrisusanto.rentipro.R
 import com.henrisusanto.rentipro.core.di.AppContainer
 import com.henrisusanto.rentipro.core.di.viewModelFactory
 import com.henrisusanto.rentipro.feature.history.HistoryScreen
+import com.henrisusanto.rentipro.feature.history.HistoryViewModel
 import com.henrisusanto.rentipro.feature.home.HomeScreen
 import com.henrisusanto.rentipro.feature.home.HomeViewModel
 import com.henrisusanto.rentipro.feature.items.ItemsScreen
@@ -133,6 +134,7 @@ private fun MainAppNavHost(container: AppContainer) {
                             unitRepository = it.unitRepository,
                             presetRepository = it.presetRepository,
                             settingsRepository = it.settingsRepository,
+                            adsConfigRepository = it.adsConfigRepository,
                         )
                     },
                 )
@@ -150,10 +152,17 @@ private fun MainAppNavHost(container: AppContainer) {
                 )
                 ItemsScreen(viewModel = viewModel)
             }
-            composable(Routes.HISTORY) { HistoryScreen() }
+            composable(Routes.HISTORY) {
+                val viewModel: HistoryViewModel = viewModel(
+                    factory = viewModelFactory(container) {
+                        HistoryViewModel(rentalRepository = it.rentalRepository)
+                    },
+                )
+                HistoryScreen(viewModel = viewModel)
+            }
             composable(Routes.SETTINGS) {
                 val viewModel: SettingsViewModel = viewModel(
-                    factory = viewModelFactory(container) { SettingsViewModel(it.settingsRepository) },
+                    factory = viewModelFactory(container) { SettingsViewModel(it.settingsRepository, it.rentalRepository, it.presetRepository) },
                 )
                 SettingsScreen(
                     viewModel = viewModel,

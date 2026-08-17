@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.henrisusanto.rentipro.core.timer.RentalTimerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-08-16T12:13:25" hostname="Macbooks-MacBook-Pro.local" time="0.005">
+<testsuite name="com.henrisusanto.rentipro.core.timer.RentalTimerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-08-16T21:39:00" hostname="Macbooks-MacBook-Pro.local" time="0.01">
   <properties/>
-  <testcase name="paused_freezesRemaining_andIsNotOverdue" classname="com.henrisusanto.rentipro.core.timer.RentalTimerTest" time="0.004"/>
+  <testcase name="paused_freezesRemaining_andIsNotOverdue" classname="com.henrisusanto.rentipro.core.timer.RentalTimerTest" time="0.008"/>
   <testcase name="remaining_countsDownFromScheduledEnd" classname="com.henrisusanto.rentipro.core.timer.RentalTimerTest" time="0.0"/>
   <testcase name="extendedRental_usesUpdatedScheduledEnd" classname="com.henrisusanto.rentipro.core.timer.RentalTimerTest" time="0.001"/>
   <testcase name="overdue_countsUpAfterScheduledEnd" classname="com.henrisusanto.rentipro.core.timer.RentalTimerTest" time="0.0"/>
   <testcase name="dueSoon_withinThreshold_onlyWhenActive" classname="com.henrisusanto.rentipro.core.timer.RentalTimerTest" time="0.0"/>
-  <testcase name="backgroundResume_usesCurrentClock_notElapsedUiTicks" classname="com.henrisusanto.rentipro.core.timer.RentalTimerTest" time="0.0"/>
+  <testcase name="backgroundResume_usesCurrentClock_notElapsedUiTicks" classname="com.henrisusanto.rentipro.core.timer.RentalTimerTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

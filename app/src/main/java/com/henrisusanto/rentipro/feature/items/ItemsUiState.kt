@@ -13,4 +13,14 @@ data class ItemRow(
 
 data class ItemsUiState(
     val items: List<ItemRow> = emptyList(),
+    val showAddDialog: Boolean = false,
+    val addText: String = "",
+    val deleteError: String? = null,
+    val showRenameDialog: Boolean = false,
+    val renameUnitId: Long? = null,
+    val renameText: String = "",
+    val showDeleteConfirmation: Boolean = false,
+    val deleteUnitId: Long? = null,
+    val deleteUnitName: String = "",
+    val isProcessing: Boolean = false,
 )

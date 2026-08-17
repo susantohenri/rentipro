@@ -4,11 +4,14 @@ import android.content.Context
 import com.henrisusanto.rentipro.core.ads.AdsConfigRepository
 import com.henrisusanto.rentipro.core.ads.AdsManager
 import com.henrisusanto.rentipro.core.ads.UmpConsentManager
+import com.henrisusanto.rentipro.core.alarm.AlarmScheduler
+import com.henrisusanto.rentipro.core.alarm.AlarmSchedulerImpl
 import com.henrisusanto.rentipro.core.data.PresetRepository
 import com.henrisusanto.rentipro.core.data.RentalRepository
 import com.henrisusanto.rentipro.core.data.SettingsRepository
 import com.henrisusanto.rentipro.core.data.UnitRepository
 import com.henrisusanto.rentipro.core.database.RentiproDatabase
+import com.henrisusanto.rentipro.core.notification.NotificationHelper
 
 /**
  * Manual dependency injection container.
@@ -55,10 +58,17 @@ class AppContainer(context: Context) {
             rentalDao = database.rentalDao(),
             rentalExtensionDao = database.rentalExtensionDao(),
             rentalUnitDao = database.rentalUnitDao(),
+            settingsRepository = settingsRepository,
+            alarmScheduler = alarmScheduler,
         )
     }
 
     // --- Alarm & Notification (Step 8) ---
-    // val alarmScheduler: AlarmScheduler by lazy { ... }
-    // val notificationHelper: NotificationHelper by lazy { ... }
+    val notificationHelper: NotificationHelper by lazy {
+        NotificationHelper(appContext)
+    }
+
+    val alarmScheduler: AlarmScheduler by lazy {
+        AlarmSchedulerImpl(appContext)
+    }
 }

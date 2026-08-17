@@ -27,4 +27,8 @@ data class HomeUiState(
     val todayRentalCount: Int = 0,
     val todayRevenue: Int = 0,
     val hasActiveRentals: Boolean = false,
-)
+    val bannerAdUnitId: String = "",
+) {
+    val activeRentals: List<HomeRentalItem>
+        get() = overdue + dueSoon + rented
+}

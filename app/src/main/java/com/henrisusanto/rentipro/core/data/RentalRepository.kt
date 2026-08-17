@@ -1,5 +1,6 @@
 package com.henrisusanto.rentipro.core.data
 
+import com.henrisusanto.rentipro.core.alarm.AlarmScheduler
 import com.henrisusanto.rentipro.core.database.dao.RentalDao
 import com.henrisusanto.rentipro.core.database.dao.RentalExtensionDao
 import com.henrisusanto.rentipro.core.database.dao.RentalUnitDao
@@ -11,12 +12,15 @@ import com.henrisusanto.rentipro.core.database.model.HistoryRentalWithDetails
 import com.henrisusanto.rentipro.core.model.RentalStatus
 import com.henrisusanto.rentipro.core.model.UnitStatus
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import java.util.Calendar
 
 class RentalRepository(
     private val rentalDao: RentalDao,
     private val rentalExtensionDao: RentalExtensionDao,
     private val rentalUnitDao: RentalUnitDao,
+    private val settingsRepository: SettingsRepository,
+    private val alarmScheduler: AlarmScheduler,
 ) {
 
     fun observeActiveRentals(): Flow<List<RentalEntity>> = rentalDao.observeActive()
@@ -52,17 +56,17 @@ class RentalRepository(
         nowMillis: Long = System.currentTimeMillis(),
     ): Long {
         val durationMillis = preset.durationMinutes * 60_000L
-        val rentalId = rentalDao.insert(
-            RentalEntity(
-                unitId = unitId,
-                presetId = preset.id,
-                durationMinutes = preset.durationMinutes,
-                price = preset.price,
-                startedAt = nowMillis,
-                scheduledEndAt = nowMillis + durationMillis,
-            ),
+        val rental = RentalEntity(
+            unitId = unitId,
+            presetId = preset.id,
+            durationMinutes = preset.durationMinutes,
+            price = preset.price,
+            startedAt = nowMillis,
+            scheduledEndAt = nowMillis + durationMillis,
         )
+        val rentalId = rentalDao.insert(rental)
         rentalUnitDao.updateStatus(unitId, UnitStatus.RENTED, nowMillis)
+        alarmScheduler.schedule(rental.copy(id = rentalId), settingsRepository.dueSoonMinutes.first())
         return rentalId
     }
 
@@ -81,19 +85,20 @@ class RentalRepository(
                 extendedAt = nowMillis,
             ),
         )
-        rentalDao.update(
-            rental.copy(
-                durationMinutes = rental.durationMinutes + preset.durationMinutes,
-                price = rental.price + preset.price,
-                scheduledEndAt = rental.scheduledEndAt + addedMillis,
-                dueSoonNotified = false,
-                overdueNotified = false,
-            ),
+        val updated = rental.copy(
+            durationMinutes = rental.durationMinutes + preset.durationMinutes,
+            price = rental.price + preset.price,
+            scheduledEndAt = rental.scheduledEndAt + addedMillis,
+            dueSoonNotified = false,
+            overdueNotified = false,
         )
+        rentalDao.update(updated)
+        alarmScheduler.schedule(updated, settingsRepository.dueSoonMinutes.first())
     }
 
     suspend fun pauseRental(rental: RentalEntity, nowMillis: Long = System.currentTimeMillis()) {
         if (rental.isPaused) return
+        alarmScheduler.cancel(rental.id)
         rentalDao.update(
             rental.copy(
                 isPaused = true,
@@ -105,21 +110,25 @@ class RentalRepository(
     suspend fun resumeRental(rental: RentalEntity, nowMillis: Long = System.currentTimeMillis()) {
         if (!rental.isPaused || rental.pausedAt == null) return
         val pauseDuration = nowMillis - rental.pausedAt
-        rentalDao.update(
-            rental.copy(
-                isPaused = false,
-                pausedAt = null,
-                scheduledEndAt = rental.scheduledEndAt + pauseDuration,
-            ),
+        val updated = rental.copy(
+            isPaused = false,
+            pausedAt = null,
+            scheduledEndAt = rental.scheduledEndAt + pauseDuration,
         )
+        rentalDao.update(updated)
+        alarmScheduler.schedule(updated, settingsRepository.dueSoonMinutes.first())
     }
 
     suspend fun returnRental(rental: RentalEntity, nowMillis: Long = System.currentTimeMillis()) {
+        if (rental.status != RentalStatus.ACTIVE) return
+        alarmScheduler.cancel(rental.id)
         rentalDao.finalizeRental(rental.id, RentalStatus.COMPLETED, nowMillis)
         rentalUnitDao.updateStatus(rental.unitId, UnitStatus.AVAILABLE, nowMillis)
     }
 
     suspend fun deleteActiveRental(rental: RentalEntity, nowMillis: Long = System.currentTimeMillis()) {
+        if (rental.status != RentalStatus.ACTIVE) return
+        alarmScheduler.cancel(rental.id)
         rentalDao.finalizeRental(rental.id, RentalStatus.DELETED, nowMillis)
         rentalUnitDao.updateStatus(rental.unitId, UnitStatus.AVAILABLE, nowMillis)
     }
@@ -140,6 +149,17 @@ class RentalRepository(
 
     suspend fun updateRental(rental: RentalEntity) {
         rentalDao.update(rental)
+    }
+
+    /**
+     * Re-arms alarms for every active rental. Idempotent — used on app start
+     * and after device boot (alarms do not survive a reboot).
+     */
+    suspend fun rescheduleAllAlarms() {
+        val dueSoonMinutes = settingsRepository.dueSoonMinutes.first()
+        rentalDao.observeActive().first().forEach { rental ->
+            alarmScheduler.schedule(rental, dueSoonMinutes)
+        }
     }
 
     private fun todayBounds(): Pair<Long, Long> {

@@ -2,12 +2,14 @@ package com.henrisusanto.rentipro.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.henrisusanto.rentipro.core.ads.AdsConfigRepository
 import com.henrisusanto.rentipro.core.data.PresetRepository
 import com.henrisusanto.rentipro.core.data.RentalRepository
 import com.henrisusanto.rentipro.core.data.SettingsRepository
 import com.henrisusanto.rentipro.core.data.UnitRepository
 import com.henrisusanto.rentipro.core.database.entity.RentalUnitEntity
 import com.henrisusanto.rentipro.core.timer.TimerTicker
+import com.henrisusanto.rentipro.feature.rental.ActiveRentalSheetUiState
 import com.henrisusanto.rentipro.feature.rental.StartRentalError
 import com.henrisusanto.rentipro.feature.rental.StartRentalStep
 import com.henrisusanto.rentipro.feature.rental.StartRentalUiState
@@ -24,12 +26,17 @@ class HomeViewModel(
     private val unitRepository: UnitRepository,
     private val presetRepository: PresetRepository,
     private val settingsRepository: SettingsRepository,
+    private val adsConfigRepository: AdsConfigRepository,
 ) : ViewModel() {
 
     private val nowMillis = MutableStateFlow(System.currentTimeMillis())
+    private val bannerAdUnitId = MutableStateFlow("")
 
     private val _startRentalState = MutableStateFlow(StartRentalUiState())
     val startRentalState: StateFlow<StartRentalUiState> = _startRentalState.asStateFlow()
+
+    private val _rentalSheetState = MutableStateFlow(ActiveRentalSheetUiState())
+    val rentalSheetState: StateFlow<ActiveRentalSheetUiState> = _rentalSheetState.asStateFlow()
 
     val uiState: StateFlow<HomeUiState> = combine(
         combine(
@@ -43,17 +50,19 @@ class HomeViewModel(
             rentalRepository.observeTodayCompletedCount(),
             rentalRepository.observeTodayRevenue(),
             nowMillis,
-        ) { todayCount, todayRevenue, now ->
-            Triple(todayCount, todayRevenue, now)
+            bannerAdUnitId,
+        ) { todayCount, todayRevenue, now, adUnitId ->
+            Pair(Triple(todayCount, todayRevenue, now), adUnitId)
         },
-    ) { rentalData, stats ->
+    ) { rentalData, statsWithAd ->
         buildUiState(
             activeRentals = rentalData.first,
             units = rentalData.second,
             dueSoonMinutes = rentalData.third,
-            todayCount = stats.first,
-            todayRevenue = stats.second,
-            nowMillis = stats.third,
+            todayCount = statsWithAd.first.first,
+            todayRevenue = statsWithAd.first.second,
+            nowMillis = statsWithAd.first.third,
+            bannerAdUnitId = statsWithAd.second,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -71,6 +80,17 @@ class HomeViewModel(
                 rentals.forEach { item ->
                     rentalRepository.syncUnitStatusFromRental(item.rental, now)
                 }
+            }
+        }
+        // Fetch ads configuration (Step 15)
+        viewModelScope.launch {
+            try {
+                val adsConfig = adsConfigRepository.fetchRemoteConfig()
+                if (adsConfig.isAdsEnabled) {
+                    bannerAdUnitId.value = adsConfig.bannerAdUnitId
+                }
+            } catch (e: Exception) {
+                // Silently fail — ads optional
             }
         }
     }
@@ -136,6 +156,98 @@ class HomeViewModel(
         )
     }
 
+    fun openRentalSheet(rentalId: Long) {
+        val item = uiState.value.activeRentals.find { it.rentalId == rentalId } ?: return
+        _rentalSheetState.value = ActiveRentalSheetUiState(item = item)
+    }
+
+    fun dismissRentalSheet() {
+        _rentalSheetState.value = ActiveRentalSheetUiState()
+    }
+
+    fun returnRental(rentalId: Long) {
+        if (_rentalSheetState.value.isProcessing) return
+        viewModelScope.launch {
+            _rentalSheetState.value = _rentalSheetState.value.copy(isProcessing = true)
+            val rental = rentalRepository.getRental(rentalId) ?: return@launch
+            rentalRepository.returnRental(rental)
+            _rentalSheetState.value = ActiveRentalSheetUiState()
+        }
+    }
+
+    fun requestDeleteRental() {
+        _rentalSheetState.value = _rentalSheetState.value.copy(showDeleteConfirmation = true)
+    }
+
+    fun cancelDeleteRental() {
+        _rentalSheetState.value = _rentalSheetState.value.copy(showDeleteConfirmation = false)
+    }
+
+    fun confirmDeleteRental() {
+        if (_rentalSheetState.value.isProcessing) return
+        viewModelScope.launch {
+            val rentalId = _rentalSheetState.value.item?.rentalId ?: return@launch
+            _rentalSheetState.value = _rentalSheetState.value.copy(isProcessing = true)
+            val rental = rentalRepository.getRental(rentalId) ?: return@launch
+            rentalRepository.deleteActiveRental(rental)
+            _rentalSheetState.value = ActiveRentalSheetUiState()
+        }
+    }
+
+    fun openExtendSelection() {
+        viewModelScope.launch {
+            val presets = presetRepository.getPresets()
+            _rentalSheetState.value = _rentalSheetState.value.copy(
+                showExtendSelection = true,
+                presets = presets,
+            )
+        }
+    }
+
+    fun cancelExtendSelection() {
+        _rentalSheetState.value = _rentalSheetState.value.copy(
+            showExtendSelection = false,
+            presets = emptyList(),
+        )
+    }
+
+    fun extendRentalWithPreset(presetId: Long) {
+        if (_rentalSheetState.value.isProcessing) return
+        val rentalId = _rentalSheetState.value.item?.rentalId ?: return
+        val preset = _rentalSheetState.value.presets.find { it.id == presetId } ?: return
+
+        viewModelScope.launch {
+            _rentalSheetState.value = _rentalSheetState.value.copy(isProcessing = true)
+            val rental = rentalRepository.getRental(rentalId) ?: return@launch
+            rentalRepository.extendRental(rental, preset)
+            _rentalSheetState.value = ActiveRentalSheetUiState()
+        }
+    }
+
+    fun pauseRental() {
+        if (_rentalSheetState.value.isProcessing) return
+        val rentalId = _rentalSheetState.value.item?.rentalId ?: return
+
+        viewModelScope.launch {
+            _rentalSheetState.value = _rentalSheetState.value.copy(isProcessing = true)
+            val rental = rentalRepository.getRental(rentalId) ?: return@launch
+            rentalRepository.pauseRental(rental)
+            _rentalSheetState.value = ActiveRentalSheetUiState()
+        }
+    }
+
+    fun resumeRental() {
+        if (_rentalSheetState.value.isProcessing) return
+        val rentalId = _rentalSheetState.value.item?.rentalId ?: return
+
+        viewModelScope.launch {
+            _rentalSheetState.value = _rentalSheetState.value.copy(isProcessing = true)
+            val rental = rentalRepository.getRental(rentalId) ?: return@launch
+            rentalRepository.resumeRental(rental)
+            _rentalSheetState.value = ActiveRentalSheetUiState()
+        }
+    }
+
     fun startRentalWithPreset(presetId: Long) {
         val state = _startRentalState.value
         val unitId = state.selectedUnitId ?: return
@@ -159,6 +271,7 @@ class HomeViewModel(
         todayCount: Int,
         todayRevenue: Int,
         nowMillis: Long,
+        bannerAdUnitId: String = "",
     ): HomeUiState {
         val (overdue, dueSoon, rented) = HomeRentalMapper.buildActiveSections(
             activeRentals = activeRentals,
@@ -177,6 +290,7 @@ class HomeViewModel(
             todayRentalCount = todayCount,
             todayRevenue = todayRevenue,
             hasActiveRentals = activeRentals.isNotEmpty(),
+            bannerAdUnitId = bannerAdUnitId,
         )
     }
 }

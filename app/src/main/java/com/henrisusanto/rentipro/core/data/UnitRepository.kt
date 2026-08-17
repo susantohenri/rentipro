@@ -57,5 +57,10 @@ class UnitRepository(
         rentalUnitDao.delete(unit)
     }
 
+    suspend fun deleteUnit(id: Long) {
+        val unit = rentalUnitDao.getById(id) ?: return
+        rentalUnitDao.delete(unit)
+    }
+
     suspend fun hasAnyUnits(): Boolean = rentalUnitDao.count() > 0
 }
