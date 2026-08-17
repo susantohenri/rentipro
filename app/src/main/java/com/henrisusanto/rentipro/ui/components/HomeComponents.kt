@@ -130,7 +130,7 @@ fun AvailableUnitsRow(
 ) {
     if (unitNames.isEmpty()) return
     Text(
-        text = unitNames.joinToString(stringResource(R.string.home_available_separator)),
+        text = "${stringResource(R.string.home_section_available).lowercase()} (${unitNames.size}): ${unitNames.joinToString(", ")}",
         style = MaterialTheme.typography.bodyLarge,
         modifier = modifier,
     )

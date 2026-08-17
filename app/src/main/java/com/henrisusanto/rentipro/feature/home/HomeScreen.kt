@@ -117,8 +117,8 @@ fun HomeScreen(viewModel: HomeViewModel) {
             }
         }
 
-        item { HomeSectionHeader(stringResource(R.string.home_section_available)) }
         item {
+
             if (uiState.availableUnits.isEmpty()) {
                 Text(
                     text = stringResource(R.string.home_all_units_rented),
